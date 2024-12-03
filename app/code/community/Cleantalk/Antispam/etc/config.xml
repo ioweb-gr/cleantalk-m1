@@ -1,0 +1,139 @@
+<config>
+	<modules>
+		<Cleantalk_Antispam>
+			<version>1.2.8</version>
+		</Cleantalk_Antispam>
+	</modules>
+	<adminhtml>
+		<events>
+			<core_block_abstract_prepare_layout_before>
+				<observers>
+					<cleantalk_antispam_add_column>
+						<class>antispam/observer</class>
+						<method>addCleantalkColumnToCustomerGrid</method>
+					</cleantalk_antispam_add_column>
+				</observers>
+			</core_block_abstract_prepare_layout_before>
+			<eav_collection_abstract_load_before>
+				<observers>
+					<cleantalk_antispam_add_attribute_to_collection>
+						<type>singleton</type>
+						<class>antispam/observer</class>
+						<method>addAttributeToCustomerCollection</method>
+					</cleantalk_antispam_add_attribute_to_collection>
+				</observers>
+			</eav_collection_abstract_load_before>
+		</events>
+	</adminhtml>
+
+	<global>
+		<rewrite>
+			<cleantalk_antispam_account_createPost>
+				<from><![CDATA[#^/customer/account/createpost/$#]]></from>
+				<to>/antispam/customer_account/createpost</to>
+			</cleantalk_antispam_account_createPost>
+			<cleantalk_antispam_index_post>
+				<from><![CDATA[#contacts/index/post(.*)#]]></from>
+				<to>/antispam/contacts_index/post$1</to>
+			</cleantalk_antispam_index_post>
+		</rewrite>
+		<helpers>
+			<antispam>
+				<class>Cleantalk_Antispam_Helper</class>
+			</antispam>
+		</helpers>
+
+		<models>
+			<antispam>
+				<class>Cleantalk_Antispam_Model</class>
+				<resourceModel>antispam_resource</resourceModel>
+			</antispam>
+
+			<antispam_resource>
+				<class>Cleantalk_Antispam_Model_Resource</class>
+				<entities>
+					<server>
+						<table>cleantalk_server</table>
+					</server>
+					<timelabels>
+						<table>cleantalk_timelabels</table>
+					</timelabels>
+				</entities>
+			</antispam_resource>
+
+			<review>
+				<rewrite>
+					<review>Cleantalk_Antispam_Model_Review</review>
+				</rewrite>
+			</review>
+
+		</models>
+
+		<resources>
+			<cleantalk_antispam_setup>
+				<setup>
+					<module>Cleantalk_Antispam</module>
+					<class>Mage_Core_Model_Resource_Setup</class>
+				</setup>
+			</cleantalk_antispam_setup>
+		</resources>
+
+		<blocks>
+			<antispam>
+				<class>Cleantalk_Antispam_Block</class>
+			</antispam>
+		</blocks>
+		<events>
+			<controller_front_init_before>
+				<observers>
+					<antispam>
+						<type>singleton</type>
+						<class>antispam/observer</class>
+						<method>interceptQuery</method>
+					</antispam>
+				</observers>
+			</controller_front_init_before>
+			<core_block_abstract_to_html_after>
+				<observers>
+					<antispam>
+						<type>singleton</type>
+						<class>antispam/observer</class>
+						<method>interceptOutput</method>
+					</antispam>
+				</observers>
+			</core_block_abstract_to_html_after>
+		</events>
+
+	</global>
+
+	<frontend>
+		<routers>
+			<antispam>
+				<use>standard</use>
+				<args>
+					<module>Cleantalk_Antispam</module>
+					<frontName>antispam</frontName>
+				</args>
+			</antispam>
+		</routers>
+		<layout>
+			<updates>
+				<antispam>
+					<file>antispam.xml</file>
+				</antispam>
+			</updates>
+		</layout>
+	</frontend>
+
+	<crontab>
+		<jobs>
+			<cleantalk_antispam_check_users>
+				<schedule><cron_expr>* * * * *</cron_expr></schedule> <!-- This runs the job every hour -->
+				<run>
+					<model>antispam/cron_checkUsersForSpamRegistrations::execute</model>
+				</run>
+			</cleantalk_antispam_check_users>
+		</jobs>
+	</crontab>
+
+</config>
