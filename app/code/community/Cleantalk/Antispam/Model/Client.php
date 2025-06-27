@@ -8,7 +8,8 @@ class Cleantalk_Antispam_Model_Client extends Mage_Core_Model_Abstract
     const API_URL = 'https://api.cleantalk.org';
     const API_URL_MODERATE_2 = 'https://moderate.cleantalk.org/api2.0';
     protected string $apiKey = '';
-    protected Cleantalk_Antispam_Model_Logger|null|false $logger;
+    /** @var Cleantalk_Antispam_Model_Logger|false|null */
+    protected $logger;
 
     public function _construct()
     {
@@ -27,8 +28,10 @@ class Cleantalk_Antispam_Model_Client extends Mage_Core_Model_Abstract
         foreach ($params as $key => $value) {
             $client->setParameterGet($key, $value);
         }
+        $this->logger->log(sprintf("Cleantalk API request: %s with params: %s", $methodName, json_encode($params)));
         try {
             $response = $client->request(Zend_Http_Client::GET);
+            $this->logger->log(sprintf("Cleantalk API response: %s", $response->getBody()));
             return json_decode($response->getBody(), true);
         } catch (Exception $e) {
             Mage::log($e->getMessage(), null, 'cleantalk.log');
@@ -78,8 +81,10 @@ class Cleantalk_Antispam_Model_Client extends Mage_Core_Model_Abstract
         // Set the raw data as the JSON payload
         $client->setRawData($jsonPayload, 'application/json');
 
+        $this->logger->log(sprintf("Cleantalk API JSON request: %s with params: %s", $methodName, json_encode($params)));
         try {
             $response = $client->request(Zend_Http_Client::POST);
+            $this->logger->log(sprintf("Cleantalk API JSON response: %s", $response->getBody()));
             return json_decode($response->getBody(), true);
         } catch (Exception $e) {
             Mage::log($e->getMessage(), null, 'cleantalk.log');
@@ -99,8 +104,10 @@ class Cleantalk_Antispam_Model_Client extends Mage_Core_Model_Abstract
         foreach ($params as $key => $value) {
             $client->setParameterPost($key, $value);
         }
+        $this->logger->log(sprintf("Cleantalk API POST request: %s with params: %s", $methodName, json_encode($params)));
         try {
             $response = $client->request(Zend_Http_Client::POST);
+            $this->logger->log(sprintf("Cleantalk API POST response: %s", $response->getBody()));
             return json_decode($response->getBody(), true);
         } catch (Exception $e) {
             Mage::log($e->getMessage(), null, 'cleantalk.log');
