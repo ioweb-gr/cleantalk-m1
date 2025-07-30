@@ -9,6 +9,18 @@ class Cleantalk_Antispam_Model_Observer
         $this->client = Mage::getSingleton('antispam/client');
     }
 
+    public function checkForSubmissionForSpam(Varien_Event_Observer $observer)
+    {
+        //get request and action
+        $request = Mage::app()->getRequest();
+        $moduleName = $request->getModuleName();
+        $controller = $request->getControllerName();
+        $action = $request->getActionName();
+        $this->checkNewsletterSubscription($moduleName, $controller, $action);
+
+        return;
+    }
+
     public function interceptOutput(Varien_Event_Observer $observer)
     {
         $transport = $observer->getTransport();
@@ -501,6 +513,38 @@ class Cleantalk_Antispam_Model_Observer
         $collection = $observer->getCollection();
         if ($collection instanceof Mage_Customer_Model_Resource_Customer_Collection) {
             $collection->addAttributeToSelect('is_cleantalk_spam_user');
+        }
+    }
+
+    private function checkNewsletterSubscription(mixed $moduleName, mixed $controller, mixed $action)
+    {
+        if ($moduleName === 'newsletter' && $controller === 'subscriber' && $action === 'new') {
+            $request = Mage::app()->getRequest();
+            $email = $request->getParam('email');
+            $name = $request->getParam('name', '');
+            $js_on = 1; // Assume JS is enabled for newsletter
+            $submit_time = '';
+            $ip = $request->getClientIp();
+
+            /** @var Cleantalk_Antispam_Model_Api_CheckNewUser $checkNewUser */
+            $checkNewUser = Mage::getModel('antispam/api_checkNewUser');
+            $checkNewUser->setSenderEmail($email);
+            $checkNewUser->setSenderNickname($name);
+            $checkNewUser->setSenderIp($ip);
+            $checkNewUser->setJsOn($js_on);
+            $checkNewUser->setSubmitTime($submit_time);
+            $checkNewUser->setResponseLang(substr(Mage::app()->getLocale()->getLocaleCode(), 0, 2));
+            $checkNewUser->setTz((new DateTime('now', new DateTimeZone(Mage::getStoreConfig('general/locale/timezone'))))->getOffset());
+
+            $result = $checkNewUser->execute();
+            if (isset($result['allow']) && !$result['allow']) {
+                $message = isset($result['comment']) ? $result['comment'] : 'Newsletter subscription blocked by CleanTalk.';
+                Mage::getSingleton('core/session')->addError($message);
+                Mage::app()->getResponse()->setRedirect(Mage::app()->getRequest()->getServer('HTTP_REFERER'));
+                Mage::app()->getResponse()->sendResponse();
+                exit;
+            }
+            // If allowed, do nothing and let the process continue
         }
     }
 

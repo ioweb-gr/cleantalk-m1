@@ -123,6 +123,17 @@
 				</antispam>
 			</updates>
 		</layout>
+		<events>
+			<controller_action_predispatch>
+				<observers>
+					<cleantalk_antispam>
+						<type>singleton</type>
+						<class>antispam/observer</class>
+						<method>checkForSubmissionForSpam</method>
+					</cleantalk_antispam>
+				</observers>
+			</controller_action_predispatch>
+		</events>
 	</frontend>
 
 	<crontab>
