@@ -64,7 +64,6 @@ class Cleantalk_Antispam_Model_Observer
     public function interceptQuery(Varien_Event_Observer $observer)
     {
         if (strpos($_SERVER['PHP_SELF'], '/downloader/') === false) {
-            Mage::getSingleton('core/session', array('name' => 'adminhtml'));
             $key = Mage::getStoreConfig('general/cleantalk/api_key');
             if ($key !== '') {
                 Cleantalk_Antispam_Model_Observer::apbct_cookie();
