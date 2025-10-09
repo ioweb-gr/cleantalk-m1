@@ -63,7 +63,12 @@ class Cleantalk_Antispam_Model_Observer
 
     public function interceptQuery(Varien_Event_Observer $observer)
     {
+        //disable running in cli mode because shell scripts also use this event and the session cannot be started in cli mode
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
         if (strpos($_SERVER['PHP_SELF'], '/downloader/') === false) {
+            Mage::getSingleton('core/session', array('name' => 'adminhtml'));
             $key = Mage::getStoreConfig('general/cleantalk/api_key');
             if ($key !== '') {
                 Cleantalk_Antispam_Model_Observer::apbct_cookie();
