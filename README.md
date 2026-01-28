@@ -20,6 +20,20 @@ composer require cleantalk/cleantalk-m1:^1.2.8
 
 3) Flush cache and re-login to the admin.
 
+## Installation (Composer, no Packagist)
+
+1) Add the VCS repository:
+```bash
+composer config repositories.cleantalk-m1 vcs https://github.com/ioweb-gr/cleantalk-m1.git
+```
+
+2) Require the module (same as above):
+```bash
+composer require cleantalk/cleantalk-m1:^1.2.8
+```
+
+3) Flush cache and re-login to the admin.
+
 ## Installation (Manual)
 
 Copy the `app/` directory contents into your Magento root, then clear cache.
