@@ -1,0 +1,18 @@
+{
+  "name": "cleantalk/cleantalk-m1",
+  "description": "CleanTalk Antispam module for OpenMage / Magento 1",
+  "type": "magento-module",
+  "license": "OSL-3.0",
+  "authors": [
+    {
+      "name": "CleanTalk",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "magento-hackathon/magento-composer-installer": "^3.0"
+  },
+  "extra": {
+    "magento-root-dir": "./"
+  }
+}
