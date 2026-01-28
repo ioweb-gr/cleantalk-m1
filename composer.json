@@ -13,6 +13,12 @@
     "magento-hackathon/magento-composer-installer": "^3.0 || ^4.0"
   },
   "extra": {
-    "magento-root-dir": "./"
+    "map": [
+      ["app/code/community/Cleantalk/Antispam", "app/code/community/Cleantalk/Antispam"],
+      ["app/etc/modules/Cleantalk_Antispam.xml", "app/etc/modules/Cleantalk_Antispam.xml"],
+      ["app/design/frontend/base/default/layout/antispam.xml", "app/design/frontend/base/default/layout/antispam.xml"],
+      ["app/design/frontend/base/default/template/cleantalk/antispam/page_addon.phtml", "app/design/frontend/base/default/template/cleantalk/antispam/page_addon.phtml"],
+      ["app/design/adminhtml/default/default/layout/cleantalk/antispam.xml", "app/design/adminhtml/default/default/layout/cleantalk/antispam.xml"]
+    ]
   }
 }
