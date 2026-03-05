@@ -15,7 +15,7 @@ composer require magento-hackathon/magento-composer-installer:^3.0
 
 2) Require this module:
 ```bash
-composer require cleantalk/cleantalk-m1:^1.2.10
+composer require cleantalk/cleantalk-m1:^1.2.11
 ```
 
 3) Flush cache and re-login to the admin.
@@ -29,7 +29,7 @@ composer config repositories.cleantalk-m1 vcs https://github.com/ioweb-gr/cleant
 
 2) Require the module (same as above):
 ```bash
-composer require cleantalk/cleantalk-m1:^1.2.10
+composer require cleantalk/cleantalk-m1:^1.2.11
 ```
 
 3) Flush cache and re-login to the admin.
@@ -41,6 +41,11 @@ Copy the `app/` directory contents into your Magento root, then clear cache.
 ## Configuration
 
 Admin Panel → System → Configuration → CleanTalk → Anti-Spam.
+
+### Request Exclusion Regex
+
+Use `Request Exclusion Regex (one per line)` to skip CleanTalk checks for matching `REQUEST_URI` paths.
+Patterns can be entered as full PCRE expressions (with delimiters) or plain regex text (delimiters optional).
 
 ## Support
 

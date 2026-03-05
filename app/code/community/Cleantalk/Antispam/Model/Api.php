@@ -67,6 +67,9 @@ ctSetCookie("%s", "%s");
     {
 
         $logger = Mage::getSingleton('antispam/logger');
+        if (self::isRequestExcludedByRegexConfig()) {
+            return;
+        }
         // Exclusions
 
         // by URL
@@ -302,6 +305,86 @@ ctSetCookie("%s", "%s");
             }
         }
         return $ret_val;
+    }
+
+    /**
+     * Exclude current request by admin-configured regex list.
+     * One pattern per line in general/cleantalk/request_exclusion_patterns.
+     *
+     * @param string|null $requestUri
+     * @return bool
+     */
+    public static function isRequestExcludedByRegexConfig($requestUri = null)
+    {
+        if ($requestUri === null) {
+            $requestUri = isset($_SERVER['REQUEST_URI']) ? (string)$_SERVER['REQUEST_URI'] : '';
+        }
+
+        if ($requestUri === '') {
+            return false;
+        }
+
+        $rawPatterns = (string)Mage::getStoreConfig('general/cleantalk/request_exclusion_patterns');
+        if ($rawPatterns === '') {
+            return false;
+        }
+
+        $patterns = preg_split('/\r\n|\r|\n/', $rawPatterns);
+        if (!is_array($patterns)) {
+            return false;
+        }
+
+        foreach ($patterns as $pattern) {
+            $pattern = trim($pattern);
+            if ($pattern === '') {
+                continue;
+            }
+
+            $compiledPattern = self::compileExclusionPattern($pattern);
+            if ($compiledPattern === null) {
+                continue;
+            }
+
+            $result = @preg_match($compiledPattern, $requestUri);
+            if ($result === 1) {
+                Mage::log(
+                    sprintf(
+                        'Cleantalk exclusion matched. uri="%s" pattern="%s" compiled="%s"',
+                        $requestUri,
+                        $pattern,
+                        $compiledPattern
+                    ),
+                    Zend_Log::DEBUG,
+                    Cleantalk_Antispam_Model_Logger::LOG_FILE
+                );
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Supports both fully delimited patterns (#^/opc/json/#) and
+     * simple delimiter-free regex (for example: ^/onepage/.+/json).
+     *
+     * @param string $pattern
+     * @return string|null
+     */
+    private static function compileExclusionPattern($pattern)
+    {
+        $pattern = trim((string)$pattern);
+        if ($pattern === '') {
+            return null;
+        }
+
+        // Already a delimited PCRE pattern.
+        if (preg_match('/^([^\w\s\\\\]).*\\1[imsxuADSUXJu]*$/', $pattern)) {
+            return $pattern;
+        }
+
+        // Treat plain input as regex body and wrap it safely.
+        return '#' . str_replace('#', '\\#', $pattern) . '#';
     }
 
     /**

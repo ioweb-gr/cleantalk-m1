@@ -147,4 +147,13 @@
 		</jobs>
 	</crontab>
 
+	<default>
+		<general>
+			<cleantalk>
+				<request_exclusion_patterns><![CDATA[^/opc/json/
+^/[^/]+/opc/json/]]></request_exclusion_patterns>
+			</cleantalk>
+		</general>
+	</default>
+
 </config>

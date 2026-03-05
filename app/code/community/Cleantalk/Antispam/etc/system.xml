@@ -57,6 +57,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </custom_forms>
+                        <request_exclusion_patterns translate="label">
+                            <label>Request Exclusion Regex (one per line)</label>
+                            <frontend_type>textarea</frontend_type>
+                            <comment><![CDATA[Skip CleanTalk checks when REQUEST_URI matches any regex. One pattern per line, delimiters optional. Example: /onepage/.*/json or ^/opc/json/]]></comment>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </request_exclusion_patterns>
                     </fields>
                 </cleantalk>
             </groups>
