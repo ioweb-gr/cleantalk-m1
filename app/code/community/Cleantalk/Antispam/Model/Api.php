@@ -68,7 +68,7 @@ ctSetCookie("%s", "%s");
 
         $logger = Mage::getSingleton('antispam/logger');
         if (self::isRequestExcludedByRegexConfig()) {
-            return;
+            return self::getExcludedRequestResult();
         }
         // Exclusions
 
@@ -305,6 +305,23 @@ ctSetCookie("%s", "%s");
             }
         }
         return $ret_val;
+    }
+
+    /**
+     * Return an explicit "allowed" response when the request is excluded
+     * from CleanTalk checks. This preserves the caller contract without
+     * short-circuiting the rest of Magento's request lifecycle.
+     *
+     * @return array
+     */
+    private static function getExcludedRequestResult()
+    {
+        return array(
+            'errno' => 0,
+            'allow' => 1,
+            'stop_queue' => 0,
+            'ct_result_comment' => '',
+        );
     }
 
     /**

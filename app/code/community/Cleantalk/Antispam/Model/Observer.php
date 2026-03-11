@@ -67,9 +67,6 @@ class Cleantalk_Antispam_Model_Observer
         if (php_sapi_name() === 'cli') {
             return;
         }
-        if (Cleantalk_Antispam_Model_Api::isRequestExcludedByRegexConfig()) {
-            return;
-        }
         if (strpos($_SERVER['PHP_SELF'], '/downloader/') === false) {
             Mage::getSingleton('core/session', array('name' => 'adminhtml'));
             $key = Mage::getStoreConfig('general/cleantalk/api_key');
@@ -177,9 +174,6 @@ class Cleantalk_Antispam_Model_Observer
 
                 $isCustomForms = Mage::getStoreConfig('general/cleantalk/custom_forms');
                 if ($isCustomForms == 1) {
-                    if (Cleantalk_Antispam_Model_Api::isRequestExcludedByRegexConfig()) {
-                        return;
-                    }
                     $ct_fields = Cleantalk_Antispam_Model_Observer::cleantalkGetFields($_POST);
                     if ($ct_fields) {
                         $aMessage = array();
