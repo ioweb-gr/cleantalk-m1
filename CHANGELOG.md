@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.12 - 2026-03-11
+
+### Fixed
+- Bumped package release after the previous version caused login and session cookie issues.
+- Limited request exclusion handling to spam checks so excluded routes no longer short-circuit unrelated request/session behavior.
+
 ## 1.2.11 - 2026-03-05
 
 ### Added

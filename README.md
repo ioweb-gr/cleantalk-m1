@@ -15,7 +15,7 @@ composer require magento-hackathon/magento-composer-installer:^3.0
 
 2) Require this module:
 ```bash
-composer require cleantalk/cleantalk-m1:^1.2.11
+composer require cleantalk/cleantalk-m1:^1.2.12
 ```
 
 3) Flush cache and re-login to the admin.
@@ -29,7 +29,7 @@ composer config repositories.cleantalk-m1 vcs https://github.com/ioweb-gr/cleant
 
 2) Require the module (same as above):
 ```bash
-composer require cleantalk/cleantalk-m1:^1.2.11
+composer require cleantalk/cleantalk-m1:^1.2.12
 ```
 
 3) Flush cache and re-login to the admin.
